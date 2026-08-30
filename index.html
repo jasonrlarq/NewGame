@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Mothership Mayhem</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  </head>
+  <body>
+    <div id="game-container">
+      <div id="overlay">
+        <div class="tron-title">MOTHERSHIP MAYHEM</div>
+        <button id="startBtn" onclick="startSequence()">INITIALIZE</button>
+        <div id="countdownText">3</div>
+      </div>
+
+      <div id="levelup-overlay">
+        <div id="levelup-banner" class="big-levelup-text">LEVEL 2 REACHED!</div>
+      </div>
+
+      <div id="shop-overlay" aria-live="polite">
+        <div class="shop-panel">
+          <div class="shop-header">
+            <h2>BLACK MARKET SHOP</h2>
+            <div id="shop-money">MONEY: $0</div>
+          </div>
+          <div id="shop-items"></div>
+          <button id="shop-continue" class="shop-button">CONTINUE</button>
+        </div>
+      </div>
+
+      <div id="return-alert">RETURN TO MOTHERSHIP!</div>
+      <div id="floating-text-layer"></div>
+      <div id="instructions">Desktop: WASD to Fly | SPACE = Tractor Beam | B = Lasers | SHIFT = Boost</div>
+
+      <div id="mobile-controls">
+        <div class="touch-btn-group">
+          <button class="touch-btn" id="btn-fire">FIRE</button>
+          <button class="touch-btn" id="btn-tractor">BEAM</button>
+        </div>
+        <div id="joystick-base">
+          <div id="joystick-stick"></div>
+        </div>
+      </div>
+    </div>
+
+    <script src="game.js"></script>
+  </body>
+</html>

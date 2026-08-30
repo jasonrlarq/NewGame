@@ -1,0 +1,24 @@
+{
+  "name": "newgame",
+  "version": "1.0.0",
+  "description": "This is a small browser game built for GitHub Codespaces. You fly a UFO, use a tractor beam to abduct cows, avoid farmer fire, and shoot back at the farmers.",
+  "main": "game.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jasonrlarq/NewGame.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/jasonrlarq/NewGame/issues"
+  },
+  "homepage": "https://github.com/jasonrlarq/NewGame#readme",
+  "devDependencies": {
+    "playwright": "^1.62.1"
+  }
+}

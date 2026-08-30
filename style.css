@@ -1,0 +1,317 @@
+body {
+  background-color: #000;
+  color: #00FF66;
+  font-family: 'Courier New', monospace;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  touch-action: none;
+}
+
+#game-container {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  display: block;
+}
+
+#mobile-controls {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  right: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.touch-btn-group {
+  display: flex;
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.touch-btn {
+  width: 75px;
+  height: 75px;
+  border-radius: 50%;
+  background: rgba(0, 255, 102, 0.15);
+  border: 2px solid rgba(0, 255, 102, 0.4);
+  color: rgba(0, 255, 102, 0.9);
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  font-size: 14px;
+  user-select: none;
+  -webkit-user-select: none;
+  outline: none;
+  touch-action: none;
+  box-shadow: 0 0 10px rgba(0, 255, 102, 0.2);
+}
+
+.touch-btn:active {
+  background: rgba(0, 255, 102, 0.4);
+  box-shadow: 0 0 20px rgba(0, 255, 102, 0.6);
+}
+
+#joystick-base {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  background: rgba(0, 255, 255, 0.1);
+  border: 2px solid rgba(0, 255, 255, 0.3);
+  position: relative;
+  pointer-events: auto;
+  touch-action: none;
+  box-shadow: 0 0 10px rgba(0, 255, 255, 0.2);
+}
+
+#joystick-stick {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: rgba(0, 255, 255, 0.5);
+  position: absolute;
+  top: 35px;
+  left: 35px;
+  pointer-events: none;
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+}
+
+@media (max-width: 768px) {
+  #instructions { display: none; }
+}
+
+#instructions {
+  position: absolute;
+  top: 15px;
+  width: 100%;
+  text-align: center;
+  font-size: 13px;
+  color: #88ffcc;
+  text-shadow: 0 0 5px #00ff66;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#floating-text-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 20;
+  overflow: hidden;
+}
+
+.floating-text {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  font-size: 22px;
+  font-weight: bold;
+  text-shadow: 0 0 10px #000, 0 0 5px #000;
+  pointer-events: none;
+  z-index: 25;
+  white-space: nowrap;
+}
+
+#return-alert {
+  position: absolute;
+  transform: translate(-50%, -150%);
+  font-size: 26px;
+  font-weight: bold;
+  color: #ffff00;
+  text-shadow: 0 0 15px #ffff00, 0 0 5px #000;
+  display: none;
+  z-index: 40;
+  pointer-events: none;
+  white-space: nowrap;
+  animation: flashAlert 0.4s infinite alternate;
+}
+
+@keyframes flashAlert {
+  0% { opacity: 1; transform: translate(-50%, -150%) scale(1); }
+  100% { opacity: 0.4; transform: translate(-50%, -160%) scale(1.1); }
+}
+
+#levelup-overlay {
+  position: absolute;
+  top: 25%;
+  width: 100%;
+  text-align: center;
+  pointer-events: none;
+  z-index: 50;
+  display: none;
+}
+
+#shop-overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(5, 12, 22, 0.85);
+  z-index: 80;
+}
+
+.shop-panel {
+  width: min(820px, 90vw);
+  background: rgba(9, 20, 32, 0.96);
+  border: 2px solid rgba(0, 255, 200, 0.9);
+  box-shadow: 0 0 30px rgba(0, 255, 200, 0.5);
+  border-radius: 18px;
+  padding: 24px;
+  color: #dffcff;
+}
+
+.shop-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  border-bottom: 1px solid rgba(0, 255, 200, 0.3);
+  padding-bottom: 12px;
+}
+
+.shop-header h2 {
+  margin: 0;
+  color: #00ffcc;
+  letter-spacing: 3px;
+  font-size: 30px;
+}
+
+#shop-money {
+  font-size: 20px;
+  color: #ffd166;
+  font-weight: bold;
+}
+
+#shop-items {
+  display: grid;
+  gap: 14px;
+}
+
+.shop-item {
+  display: grid;
+  grid-template-columns: 1.7fr 0.9fr 0.8fr;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(0, 255, 200, 0.2);
+  padding: 12px 14px;
+  border-radius: 12px;
+}
+
+.shop-item-name {
+  font-size: 18px;
+  font-weight: bold;
+  color: #7fffd4;
+}
+
+.shop-item-desc {
+  font-size: 12px;
+  color: #b7dfe5;
+  opacity: 0.9;
+}
+
+.shop-item-price {
+  font-size: 18px;
+  color: #ffd166;
+  font-weight: bold;
+  text-align: right;
+}
+
+.shop-item button,
+.shop-button {
+  background: rgba(0, 255, 200, 0.1);
+  border: 1px solid rgba(0, 255, 200, 0.8);
+  color: #dffcff;
+  font-family: 'Courier New', monospace;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 10px;
+  padding: 10px 16px;
+  transition: 0.15s ease;
+}
+
+.shop-item button:hover,
+.shop-button:hover {
+  background: rgba(0, 255, 200, 0.22);
+  box-shadow: 0 0 15px rgba(0, 255, 200, 0.35);
+}
+
+.shop-button {
+  width: 100%;
+  margin-top: 18px;
+  font-size: 20px;
+  padding: 14px 18px;
+}
+
+.big-levelup-text {
+  font-size: 56px;
+  font-weight: bold;
+  color: #ff00ff;
+  text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ff00ff, 0 0 120px #ffff00;
+  animation: pulseGlow 0.6s infinite alternate;
+  letter-spacing: 4px;
+}
+
+@keyframes pulseGlow {
+  0% { transform: scale(1); text-shadow: 0 0 20px #ff00ff, 0 0 40px #ff00ff, 0 0 80px #ffff00; }
+  100% { transform: scale(1.08); text-shadow: 0 0 30px #ff00ff, 0 0 60px #ff00ff, 0 0 120px #ffff00, 0 0 160px #ffff00; }
+}
+
+#overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(5, 11, 26, 0.92);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.tron-title {
+  font-size: 48px;
+  font-weight: bold;
+  color: #00ffff;
+  text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff;
+  margin-bottom: 30px;
+  letter-spacing: 4px;
+}
+
+#startBtn {
+  background: transparent;
+  color: #ff00ff;
+  border: 3px solid #ff00ff;
+  padding: 15px 40px;
+  font-size: 26px;
+  cursor: pointer;
+  border-radius: 8px;
+  font-family: 'Courier New', monospace;
+  font-weight: bold;
+  box-shadow: 0 0 20px rgba(255, 0, 255, 0.6), inset 0 0 20px rgba(255, 0, 255, 0.6);
+  transition: 0.2s;
+}
+
+#startBtn:hover {
+  background: #ff00ff;
+  color: #000;
+  box-shadow: 0 0 40px #ff00ff, 0 0 80px #ff00ff;
+}
+
+#countdownText {
+  font-size: 100px;
+  color: #00ff66;
+  font-weight: bold;
+  text-shadow: 0 0 30px #00ff66, 0 0 60px #00ff66;
+  display: none;
+}
