@@ -1,17 +1,10 @@
-const container = document.getElementById('game-container');
-const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x050b1a);
-scene.fog = new THREE.FogExp2(0x050b1a, 0.015);
+// ===== MAIN GAME LOOP & LOGIC =====
+// Core game update, collision detection, and gameplay mechanics
 
-const camera = new THREE.PerspectiveCamera(65, window.innerWidth / window.innerHeight, 0.1, 1000);
-camera.position.set(0, 18, 28);
-camera.rotation.x = -0.58;
-scene.add(camera);
-
-const renderer = new THREE.WebGLRenderer({ antialias: true, powerPreference: 'high-performance' });
-renderer.setSize(window.innerWidth, window.innerHeight);
-renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-container.appendChild(renderer.domElement);
+let projectiles = [];
+let ufoLasers = [];
+const projGeo = new THREE.SphereGeometry(0.4, 10, 10);
+const projMat = new THREE.MeshBasicMaterial({ color: 0xff2200 });
 
 let audioCtx = null;
 let tractorOsc = null;

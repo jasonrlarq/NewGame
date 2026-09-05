@@ -45,6 +45,17 @@
       </div>
     </div>
 
-    <script src="game.js"></script>
+    <!-- Refactored game modules - load in dependency order -->
+    <script src="audio.js"></script>
+    <script src="gameState.js"></script>
+    <script src="scene.js"></script>
+    <script src="objects.js"></script>
+    <script src="world.js"></script>
+    <script src="creatures.js"></script>
+    <script src="effects.js"></script>
+    <script src="boss.js"></script>
+    <script src="hud.js"></script>
+    <script src="input.js"></script>
+    <script src="game-logic.js"></script>
   </body>
 </html>
