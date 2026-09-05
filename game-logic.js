@@ -48,9 +48,7 @@ function fireManualLaser() {
 
 function triggerLevelUp() {
   gameStats.level += 1;
-  gameStats.cargo = { cows: 0, pigs: 0, farmers: 0 };
-  gameStats.msQuota = { cows: 0, pigs: 0, farmers: 0 };
-  gameStats.farmersKilled = 0;
+  resetLevelProgress();
   gameStats.energy = getMaxEnergy();
 
   farmers.forEach((f) => {
@@ -111,17 +109,7 @@ function resetGame() {
   if (gameStats.lives > 0) {
     gameStats.lives -= 1;
   } else {
-    gameStats.lives = 3;
-    gameStats.score = 0;
-    gameStats.money = 0;
-    gameStats.level = 1;
-    gameStats.weaponTier = 1;
-    gameStats.shieldLevel = 0;
-    gameStats.speedLevel = 0;
-    gameStats.ufoModelLevel = 0;
-    gameStats.cargo = { cows: 0, pigs: 0, farmers: 0 };
-    gameStats.msQuota = { cows: 0, pigs: 0, farmers: 0 };
-    gameStats.farmersKilled = 0;
+    resetRunState();
     farmers.forEach((f) => {
       f.maxHealth = 2;
       f.health = f.maxHealth;
@@ -145,6 +133,67 @@ function resetGame() {
   updateHUDGraphics();
 }
 
+function updateMovementAndEnergy() {
+  gameStats.energy -= 0.01;
+  const speedBoostMod = 1 + (gameStats.speedLevel * 0.12);
+  let speed = 0.18 * speedBoostMod;
+  let moving = false;
+  if (keys.shift && gameStats.boostMeter > 0) {
+    speed = (0.50 * speedBoostMod);
+    gameStats.boostMeter -= 0.6;
+  }
+  if (keys.arrowleft || keys.a) { ufoGroup.position.x -= speed; moving = true; }
+  if (keys.arrowright || keys.d) { ufoGroup.position.x += speed; moving = true; }
+  if (keys.arrowup || keys.w) { ufoGroup.position.z -= speed; moving = true; }
+  if (keys.arrowdown || keys.s) { ufoGroup.position.z += speed; moving = true; }
+  if (Math.abs(joyX) > 0.05) { ufoGroup.position.x += joyX * speed; moving = true; }
+  if (Math.abs(joyY) > 0.05) { ufoGroup.position.z += joyY * speed; moving = true; }
+
+  if (moving) gameStats.energy -= 0.05;
+  if (tractorBeam.visible) gameStats.energy -= 0.15;
+  gameStats.energy = Math.min(getMaxEnergy(), gameStats.energy);
+}
+
+function updateBossState() {
+  if (!boss || !boss.alive) return;
+
+  if (boss.introTimer > 0) {
+    boss.introTimer -= 1;
+    boss.group.position.x = ufoGroup.position.x + Math.sin(Date.now() * 0.01) * 4;
+    boss.group.position.z = ufoGroup.position.z - 42 + Math.cos(Date.now() * 0.015) * 2;
+    boss.group.position.y = 8 + Math.sin(Date.now() * 0.01) * 2;
+    if (boss.introTimer === 0) {
+      spawnFloatingText('PHASE 2!', '#ffff00', boss.group.position);
+    }
+  } else {
+    boss.group.position.x = ufoGroup.position.x + Math.sin(Date.now() * 0.0015) * 10;
+    boss.group.position.z = ufoGroup.position.z - 42 + Math.cos(Date.now() * 0.0018) * 4;
+    boss.group.position.y = 8 + Math.sin(Date.now() * 0.004) * 1.3;
+  }
+  boss.group.rotation.y = Math.sin(Date.now() * 0.002) * 0.8;
+  if (boss.glow) {
+    boss.glow.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.12);
+  }
+  if (boss.ring) {
+    boss.ring.rotation.z += 0.03;
+  }
+  if (boss.health <= boss.maxHealth * 0.5 && boss.phase === 1) {
+    boss.phase = 2;
+    spawnFloatingText('PHASE 2!', '#ff9900', boss.group.position);
+    gameStats.boostMeter = 100;
+    sndPowerup();
+  }
+  boss.fireTimer += 1;
+  const attackDelay = boss.phase === 2 ? 26 : 46;
+  if (boss.fireTimer > attackDelay) {
+    boss.fireTimer = 0;
+    fireBossShot();
+    if (boss.phase === 2 && Math.random() < 0.4) {
+      fireBossShot();
+    }
+  }
+}
+
 function updateGame() {
   if (!gameStarted) return;
 
@@ -166,24 +215,7 @@ function updateGame() {
     return;
   }
 
-  gameStats.energy -= 0.01;
-  const speedBoostMod = 1 + (gameStats.speedLevel * 0.12);
-  let speed = 0.18 * speedBoostMod;
-  let moving = false;
-  if (keys.shift && gameStats.boostMeter > 0) {
-    speed = (0.50 * speedBoostMod);
-    gameStats.boostMeter -= 0.6;
-  }
-  if (keys.arrowleft || keys.a) { ufoGroup.position.x -= speed; moving = true; }
-  if (keys.arrowright || keys.d) { ufoGroup.position.x += speed; moving = true; }
-  if (keys.arrowup || keys.w) { ufoGroup.position.z -= speed; moving = true; }
-  if (keys.arrowdown || keys.s) { ufoGroup.position.z += speed; moving = true; }
-  if (Math.abs(joyX) > 0.05) { ufoGroup.position.x += joyX * speed; moving = true; }
-  if (Math.abs(joyY) > 0.05) { ufoGroup.position.z += joyY * speed; moving = true; }
-
-  if (moving) gameStats.energy -= 0.05;
-  if (tractorBeam.visible) gameStats.energy -= 0.15;
-  gameStats.energy = Math.min(getMaxEnergy(), gameStats.energy);
+  updateMovementAndEnergy();
 
   const weaponColor = new THREE.Color(getLaserColor(gameStats.weaponTier));
   saucerMat.emissive.copy(weaponColor.clone().multiplyScalar(0.15));
@@ -288,43 +320,7 @@ function updateGame() {
     domeMesh.material.opacity = 0.95;
   }
 
-  if (boss && boss.alive) {
-    if (boss.introTimer > 0) {
-      boss.introTimer -= 1;
-      boss.group.position.x = ufoGroup.position.x + Math.sin(Date.now() * 0.01) * 4;
-      boss.group.position.z = ufoGroup.position.z - 42 + Math.cos(Date.now() * 0.015) * 2;
-      boss.group.position.y = 8 + Math.sin(Date.now() * 0.01) * 2;
-      if (boss.introTimer === 0) {
-        spawnFloatingText('PHASE 2!', '#ffff00', boss.group.position);
-      }
-    } else {
-      boss.group.position.x = ufoGroup.position.x + Math.sin(Date.now() * 0.0015) * 10;
-      boss.group.position.z = ufoGroup.position.z - 42 + Math.cos(Date.now() * 0.0018) * 4;
-      boss.group.position.y = 8 + Math.sin(Date.now() * 0.004) * 1.3;
-    }
-    boss.group.rotation.y = Math.sin(Date.now() * 0.002) * 0.8;
-    if (boss.glow) {
-      boss.glow.scale.setScalar(1 + Math.sin(Date.now() * 0.005) * 0.12);
-    }
-    if (boss.ring) {
-      boss.ring.rotation.z += 0.03;
-    }
-    if (boss.health <= boss.maxHealth * 0.5 && boss.phase === 1) {
-      boss.phase = 2;
-      spawnFloatingText('PHASE 2!', '#ff9900', boss.group.position);
-      gameStats.boostMeter = 100;
-      sndPowerup();
-    }
-    boss.fireTimer += 1;
-    const attackDelay = boss.phase === 2 ? 26 : 46;
-    if (boss.fireTimer > attackDelay) {
-      boss.fireTimer = 0;
-      fireBossShot();
-      if (boss.phase === 2 && Math.random() < 0.4) {
-        fireBossShot();
-      }
-    }
-  }
+  updateBossState();
 
   const msTime = Date.now() * 0.005;
   msLights.forEach((light, i) => {
@@ -783,6 +779,3 @@ function animate() {
   updateGame();
   renderer.render(scene, camera);
 }
-
-updateHUDGraphics();
-animate();

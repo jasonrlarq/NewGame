@@ -28,6 +28,26 @@ let gameStats = {
   lives: 3,
 };
 
+function resetLevelProgress() {
+  gameStats.cargo = { cows: 0, pigs: 0, farmers: 0 };
+  gameStats.msQuota = { cows: 0, pigs: 0, farmers: 0 };
+  gameStats.farmersKilled = 0;
+}
+
+function resetRunState() {
+  gameStats.score = 0;
+  gameStats.money = 0;
+  gameStats.level = 1;
+  gameStats.weaponTier = 1;
+  gameStats.shieldLevel = 0;
+  gameStats.speedLevel = 0;
+  gameStats.ufoModelLevel = 0;
+  gameStats.boostMeter = 0;
+  gameStats.overclockTimer = 0;
+  gameStats.lives = 3;
+  resetLevelProgress();
+}
+
 let mothershipState = 'waiting';
 let shopOpen = false;
 

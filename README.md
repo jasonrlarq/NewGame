@@ -6,7 +6,22 @@ Controls:
 - Move: WASD or arrow keys
 - Tractor beam: Space
 - Shoot: B
-- Restart: Enter
+- Restart after a crash: R
+
+## Project structure
+
+The browser loads the active game files in the order listed in [index.html](index.html). The main responsibilities are:
+
+- `gameState.js`: progression state, constants, and shop definitions
+- `scene.js` and `objects.js`: Three.js setup and shared scene objects
+- `world.js`, `creatures.js`, and `boss.js`: world entities and spawning
+- `effects.js`: particles and floating text
+- `hud.js`: dashboard and shop UI rendering
+- `input.js`: keyboard, touch, and start-button input
+- `game-logic.js`: gameplay rules and frame updates
+- `bootstrap.js`: application startup only
+
+Keep startup work in `bootstrap.js` and gameplay rules in `game-logic.js`. `game-old-backup.js` is an archive and is not loaded by the game.
 
 ## Run locally in Codespaces
 

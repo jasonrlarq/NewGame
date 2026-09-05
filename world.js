@@ -32,9 +32,15 @@ function createBarnAt(x, z) {
 }
 
 let barns = [];
-for (let i = 0; i < 8; i++) {
-  barns.push(createBarnAt((Math.random() - 0.5) * 160, (Math.random() - 0.5) * 160));
-}
+const barnPositions = [
+  [-58, -58],
+  [0, -58],
+  [58, -58],
+  [-58, 58],
+  [0, 58],
+  [58, 58],
+];
+barnPositions.forEach(([x, z]) => barns.push(createBarnAt(x, z)));
 
 function createFenceLine(x, z, length, rotation = 0) {
   const group = new THREE.Group();
@@ -139,9 +145,29 @@ function createWindmillAt(x, z) {
 
 const worldProps = [];
 const windmills = [];
-for (let i = 0; i < 6; i++) {
-  worldProps.push(createFenceLine((Math.random() - 0.5) * 180, (Math.random() - 0.5) * 180, 25 + Math.random() * 18, Math.random() * Math.PI));
-}
-worldProps.push(createFarmhouseAt(-65, -20));
-worldProps.push(createSiloAt(68, 36));
-windmills.push(createWindmillAt(-90, 45));
+
+const fieldCenters = [
+  [-32, -30],
+  [32, -30],
+  [-32, 30],
+  [32, 30],
+];
+fieldCenters.forEach(([x, z]) => {
+  const fieldWidth = 36;
+  const fieldDepth = 30;
+  worldProps.push(createFenceLine(x, z - fieldDepth / 2, fieldWidth, 0));
+  worldProps.push(createFenceLine(x, z + fieldDepth / 2, fieldWidth, 0));
+  worldProps.push(createFenceLine(x - fieldWidth / 2, z, fieldDepth, Math.PI / 2));
+  worldProps.push(createFenceLine(x + fieldWidth / 2, z, fieldDepth, Math.PI / 2));
+});
+
+worldProps.push(createFarmhouseAt(-8, -4));
+worldProps.push(createSiloAt(10, -4));
+
+const windmillPositions = [
+  [-82, -70],
+  [82, -70],
+  [-82, 70],
+  [82, 70],
+];
+windmillPositions.forEach(([x, z]) => windmills.push(createWindmillAt(x, z)));

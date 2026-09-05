@@ -54,6 +54,9 @@ function updateJoystick(clientX, clientY) {
 const btnFire = document.getElementById('btn-fire');
 const btnTractor = document.getElementById('btn-tractor');
 const shopContinueBtn = document.getElementById('shop-continue');
+const startBtn = document.getElementById('startBtn');
+
+startBtn.addEventListener('click', startSequence);
 
 shopContinueBtn.addEventListener('click', () => {
   closeShop();
